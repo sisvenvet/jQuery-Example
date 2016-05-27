@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="BG-bg">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Tree Example</title>
+		<script 
+
+src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<style>
+			html{height:100%;}
+			body
+			{
+			}
+			table
+			{	display:block;
+				float:right;
+				border: 2px solid gray; 
+				border-opacity: 0.3; 
+			}
+			tr,td,th{
+				border :1px solid black;
+			}
+								
+			#snimka
+			{
+				 z-index:-1;
+				 position:absolute;
+				 left:0px;
+				 top:0px;
+				 height:400px;
+				 width:400px;
+				 border-style: solid;
+				 border-color: #99ffcc red yellow lightblue;
+				 border-width: 10px ;
+				 border-radius: 25%;	 
+				}
+			#snimka1
+			{
+				 position:absolute;
+				 left:0px;
+				 top:0px;
+				 height:400px;
+				 width:400px;
+				 opacity: 0.7;
+    				 filter: alpha(opacity=40); 
+			}
+			.corner{
+				width: 50px;
+				margin: auto;
+			}
+			#all_corners{
+				display:block;
+				text-align:center;
+				width: 50px;
+
+			}
+			#move_right,{float:right;display:block}
+			#move_top, #move_bottom, .center 
+			{margin-left: auto;
+ 			margin-right: auto; 
+			display:block;
+			text-align:left !important;}
+			.color {float:center; display:block;}
+			.dotted {border-style:dotted;}
+			.w1px {border-top-width:1px;}
+		</style>	
+	</head>
+	<body>
+		<div>
+			<img id="snimka1" 
+
+src="http://www.fragileoasis.org/static/images/badges/empty.png" alt="picture" />
+			<img id="snimka" src="http://www.wlparksandrec.org/favicon.ico" 
+
+alt="picture" />
+		</div>
+		<div>
+			<table>
+				<tr><th colspan=4>Control Panel</th></tr>
+				<tr><td><input type="text" class="corner" id="left_corner" 
+
+data-corner="top_left" /></td>
+					<td colspan=2><input type="button" 
+
+data-direction="top" id="move_top" value="Up" /></td>
+					<td><input type="text" class="corner" 
+
+data-corner="top_right" id="right_corner" /></td></tr>
+				<tr><td><input type="button" data-direction="left" 
+
+id="move_left" value="Left" /></td>
+					<td colspan=2><input type="text" id="all_corners" 
+
+class="center" /></td>
+					<td><input type="button" data-direction="right" 
+
+id="move_right" value="Right" /></td></tr>
+				<tr><td><input type="text" class="corner" 
+
+data-corner="bottom_left" id="left_bcorner"  /></td>
+					<td colspan=2><input type="button" 
+
+data-direction="bottom" id="move_bottom" value="Down" /></td>
+					<td><input type="text" class="corner" 
+
+data-corner="bottom_right" id="right_bcorner"  /></td></tr>
+				<tr><th colspan=4>Borders Panel</th></tr>
+				<tr><td>Up</td>
+					<td colspan=2><input type="text" class="corner" 
+
+id="top_border" />
+						<select>
+							<option value="solid">solid</option>
+							<option 
+
+value="dotted">dotted</option>
+							<option 
+
+value="dashed">dashed</option>
+							<option 
+
+value="double">double</option>
+							<option value="ridge">ridge</option>
+						</select>	
+					</td>
+					<td><input type="text" class="corner color" 
+
+style="background-color:#99ffcc;" /></td>
+				</tr>
+				<tr><td>Right</td>
+					<td colspan=2><input type="text" class="corner" 
+
+id="right_border" />
+						<select>
+							<option value="solid">solid</option>
+							<option 
+
+value="dotted">dotted</option>
+							<option 
+
+value="dashed">dashed</option>
+							<option 
+
+value="double">double</option>
+							<option value="ridge">ridge</option>
+						</select>
+					</td>
+					<td><input type="text" class="corner color" 
+
+style="background-color:red;" /></td>
+				</tr>
+				<tr><td>Down</td>
+					<td colspan=2><input type="text" class="corner" 
+
+id="bottom_border" />
+					<select>
+						<option value="solid">solid</option>
+						<option value="dotted">dotted</option>
+						<option value="dashed">dashed</option>
+						<option value="double">double</option>
+						<option value="ridge">ridge</option>
+					</select>
+					</td>
+					<td><input type="text" class="corner color" 
+
+style="background-color:yellow;" /></td>
+				</tr>
+				<tr><td>Left</td>
+					<td colspan=2><input type="text" class="corner" 
+
+id="left_border" />
+					<select>
+						<option value="solid">solid</option>
+						<option value="dotted">dotted</option>
+						<option value="dashed">dashed</option>
+						<option value="double">double</option>
+						<option value="ridge">ridge</option>
+					</select>
+					</td>
+					<td><input type="text" id="allBorders" class="corner 
+
+color" style="background-color:lightblue;" /></td></tr>
+				<tr><td>All</td>
+					<td colspan=2><input type="text" class="corner" 
+
+id="all_borders" />
+					<select>
+						<option value="solid">solid</option>
+						<option value="dotted">dotted</option>
+						<option value="dashed">dashed</option>
+						<option value="double">double</option>
+						<option value="ridge">ridge</option>
+					</select>	
+					</td>
+					<td><input type="text" class="corner color" 
+
+style="background-color:#ccff33;" /></td>
+				</tr>
+			</table>
+
+		</div>
+
+		<script>
+			var cur_pos_x;
+			var cur_pos_y;
+			var move_speed = 50;	
+			var corner;
+			var width_val;
+			
+			function move_pic(new_direction)
+			{				
+				switch(new_direction)
+				{
+					case 'right': cur_pos_x = 
+
+Number($('#snimka').offset().left) + move_speed; break;
+					case 'left': cur_pos_x = 
+
+Number($('#snimka').offset().left) - move_speed; break;
+					case 'top': cur_pos_y = 
+
+Number($('#snimka').offset().top) - move_speed; break;
+					case 'bottom': cur_pos_y = 
+
+Number($('#snimka').offset().top) + move_speed; break;
+				}
+								
+				$('#snimka').css('left', cur_pos_x);
+				$('#snimka').css('top', cur_pos_y);
+			}
+			
+			//function change_corners(new_corner)
+			//{
+				//switch(new_corner)
+				//{
+				//	case: 'top_left': $('#snimka').css("border-radius", 
+
+"$('#all_corners').val()+"%""); break;
+				//	case: 'top_right':
+				//	case: 'bottom_left':
+				//	case: 'bottom_right':
+				//}
+				
+			//}			
+			$(document).ready(function () {
+							
+				$('input[type=button]').click(function () {
+					move_pic($(this).data('direction'));	
+				});
+
+				$('#top_border').change(function(){
+					$('#snimka').addClass("w1px");
+					//$('#snimka').addClass("dotted");
+					bwidth = $(this).val();
+					$('#snimka').css({"border-top-width": bwidth+'px', 
+
+"border-top-style": "dashed"});
+
+				});
+
+				$('#right_border').change(function(){
+					$('#snimka').addClass("w1px");
+					//$('#snimka').addClass("dotted");
+					bwidth = $(this).val();
+					$('#snimka').css({"border-right-width": bwidth+'px', 
+
+"border-top-style": "dashed"});
+
+				});
+
+				$('#bottom_border').change(function(){
+					$('#snimka').addClass("w1px");
+					//$('#snimka').addClass("dotted");
+					bwidth = $(this).val();
+					$('#snimka').css({"border-bottom-width": bwidth+'px', 
+
+"border-top-style": "dashed"});
+
+				});
+				$('#left_border').change(function(){
+					$('#snimka').addClass("w1px");
+					//$('#snimka').addClass("dotted");
+					bwidth = $(this).val();
+					$('#snimka').css({"border-left-width": bwidth+'px', 
+
+"border-top-style": "dashed"});
+
+				});
+
+				$('#all_borders').change(function () {
+					width_val = $('#all_borders').val();
+					$('#snimka').css({"border-width": width_val+"px", 
+
+"border-top-style": "dashed"});
+				});
+							
+				$('#all_corners').change(function () {
+					corner = $('#all_corners').val();
+					$('#snimka').css({"border-radius": corner+"%", 
+
+"border-style": "dashed"});
+					
+				});
+
+				$('#left_corner').change(function () {
+					corner = $('#left_corner').val();
+					$('#snimka').css({"border-top-left-radius": 
+
+corner+"%", "border-style": "dashed"});
+					
+				});
+
+				$('#right_corner').change(function () {
+					corner = $('#right_corner').val();
+					$('#snimka').css({"border-top-right-radius": 
+
+corner+"%", "border-style": "dashed"});
+					
+				});
+
+				$('#left_bcorner').change(function () {
+					corner = $('#left_bcorner').val();
+					$('#snimka').css({"border-bottom-left-radius": 
+
+corner+"%", "border-style": "dashed"});
+					
+				});
+
+				$('#right_bcorner').change(function () {
+					corner = $('#right_bcorner').val();
+					$('#snimka').css({"border-bottom-right-radius": 
+
+corner+"%", "border-style": "dashed"});
+					
+				});
+
+				
+			});
+		</script>
+	</body>
+</html>
